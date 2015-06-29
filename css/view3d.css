@@ -57,19 +57,19 @@ body {
   position: absolute;
   left: 2%;
   bottom:50%;
-  text-alight: center;
+  text-align: center;
 }
 
 .hud #socket-connect {
   position: absolute;
   right: 2%;
   bottom:10%;
-  text-alight: center;
+  text-align: center;
 }
 
 .hud #socket-id {
   position: absolute;
   right: 2%;
   bottom:1%;
-  text-alight: center;
+  text-align: center;
 }
