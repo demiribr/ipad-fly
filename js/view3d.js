@@ -129,6 +129,7 @@ function mainLoop() {
     requestAnimationFrame(mainLoop);
   }, 1000 / VIEW3D.fps );
 
+  TWEEN.update();
   VIEW3D.update();
 }
 

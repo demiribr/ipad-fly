@@ -7,7 +7,8 @@
     <title>3D viewer</title>
 
     <!-- 3rd party libraries (from bower) -->
-    <link href="lib/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="lib/font-awesome/css/font-awesome.css" rel="stylesheet"></link>
+    <script src="lib/tweenjs/src/Tween.js"></script>
 
     <!-- Our code -->
     <link href="css/view3d.css" rel="stylesheet">
@@ -25,10 +26,18 @@
 
       <!-- HUD Controls -->
       <div class="hud">
-        <div class="btn" title="Go to location" href="#" style="height: auto; position: absolute; top:20px; left: 27px; color: white; font-size: 14pt" onclick="VIEW3D.camera.position.set(185.3495418591419, 13.318606666414098, 817.1672797205188); VIEW3D.camera.quaternion.set(-0.020694087192570994, 0.816764570694037, 0.02935161698072975, 0.5758523017188251);">
+        <div class="btn" title="Go to location" href="#" style="height: auto; position: absolute; top:20px; left: 27px; color: white; font-size: 14pt" onclick="var tween = new TWEEN.Tween(VIEW3D.camera.position).to(
+              {x: 185.3495418591419, y: 13.318606666414098, z: 817.1672797205188
+            }, 3000).easing(TWEEN.Easing.Sinusoidal.InOut).onUpdate(function () {
+            }).onComplete(function () {
+            }).start();">
           <i class="fa fa-map-marker fa-3x"></i>
         </div>
-        <div class="btn" title="Reset view" href="#" style="height: auto; position: absolute; top:100px; left: 20px; color: white; font-size: 14pt" onclick="VIEW3D.camera.position.set(130, 2000, 1300); VIEW3D.camera.lookAt(new THREE.Vector3(0, 0, 0));">
+        <div class="btn" title="Reset view" href="#" style="height: auto; position: absolute; top:100px; left: 20px; color: white; font-size: 14pt" onclick="var tween = new TWEEN.Tween(VIEW3D.camera.position).to(
+              {x: 130, y: 2000, z: 2000
+            }, 3000).easing(TWEEN.Easing.Sinusoidal.InOut).onUpdate(function () {
+            }).onComplete(function () {
+            }).start();">
           <i class="fa fa-refresh fa-3x"></i>
         </div>
         <div id="forward" class="btn" href="#" style="display: none;">
