@@ -26,6 +26,7 @@
 
       <!-- HUD Controls -->
       <div class="hud">
+        <molab-location-search griddims="grid_dims" geobounds="geo_bounds"/>
         <div class="btn" title="Go to location" href="#" style="height: auto; position: absolute; top:20px; left: 27px; color: white; font-size: 14pt" onclick="var tween = new TWEEN.Tween(VIEW3D.camera.position).to(
               {x: 185.3495418591419, y: 13.318606666414098, z: 817.1672797205188
             }, 3000).easing(TWEEN.Easing.Sinusoidal.InOut).onUpdate(function () {
@@ -60,6 +61,8 @@
 
     </div><!-- MainController -->
 
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+
     <!-- 3rd party libraries (from bower) -->
     <script src="lib/angularjs/angular.js"></script>
     <script src="lib/informatics-badge-directive/informatics-badge.js"></script>
@@ -86,7 +89,9 @@
     <script src="js/socket.js"></script>
     <script src="js/view3d.js"></script>
     <script src="js/viewer.controller.js"></script>
+    <script src="js/location_search/molabCoordService.js"></script>
     <script src="js/controls/HUD.js"></script>
+    <script src="js/location_search/molabLocationSearch.js"></script>
 
   </body>
 </html>
