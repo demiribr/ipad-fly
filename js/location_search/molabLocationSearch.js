@@ -6,11 +6,12 @@ angular.module('viewer')
       restrict: 'E',
       scope: { 
         'griddims': '=',
-        'geobounds': '='
+        'geobounds': '=',
+        'movefunc': '='
       },
       controller: locSearchController,
       controllerAs: 'vm',
-      template: '<input id="molabSearchInput" class="controls" type="text" placeholder="Enter a location" />',
+      template: '<input type="text" class="rounded" id="molabSearchInput" onfocus="javascript: if(this.value!==\'\') this.value=\'\';" placeholder="Enter a location" style="position:absolute; top:10px; left:10px;"></input>',
       link: locSearchPostLink
     }
   });
@@ -18,7 +19,12 @@ angular.module('viewer')
 function locSearchPostLink(scope, element, attrs) {
   // location search
   scope.loc_input = $('#molabSearchInput')[0];
-  scope.autocomplete = new google.maps.places.Autocomplete(scope.loc_input);
+  var mapBounds = new google.maps.LatLngBounds(
+    new google.maps.LatLng(scope.vm.coordService.minLat, scope.vm.coordService.minLon),
+    new google.maps.LatLng(scope.vm.coordService.maxLat, scope.vm.coordService.maxLon)
+  );
+  scope.autocomplete = new google.maps.places.Autocomplete(scope.loc_input, {bounds:mapBounds});
+  //scope.autocomplete.setBounds(mapBounds);
   google.maps.event.addListener(scope.autocomplete, 'place_changed', function() {
     //infowindow.close();
     var place = scope.autocomplete.getPlace();
@@ -26,6 +32,7 @@ function locSearchPostLink(scope, element, attrs) {
     var loc = {lat:place.geometry.location.A, lon:place.geometry.location.F};
     var newCoords = scope.vm.coordService.lookupCoords(loc);
     console.log(newCoords);
+    scope.movefunc(newCoords);
   });
 }
 

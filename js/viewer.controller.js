@@ -78,6 +78,14 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
      VIEW3D.camera.position.set(Number($scope.camera_x), Number($scope.camera_y), Number($scope.camera_z));
    });
 
+  $scope.moveCamera = function(pos) {
+    var tween = new TWEEN.Tween(VIEW3D.camera.position).to(
+              {x: pos.x, y: pos.y, z: pos.z}, 
+              3000).easing(TWEEN.Easing.Sinusoidal.InOut).onUpdate(function () {
+                }).onComplete(function () {
+                }).start();
+  }
+
   $scope.getCameraPosition = function() {
     $scope.position = VIEW3D.camera.position;
   }

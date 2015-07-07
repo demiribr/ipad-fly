@@ -4,7 +4,6 @@ angular.module('viewer')
 	.service('molabCoordService', function() {
 		var vm = this;
 		vm.grid_dims = null;
-		vm.geo_bounds = null;
 
 		vm.dLat = null;
 		vm.dLon = null;
@@ -38,11 +37,6 @@ angular.module('viewer')
 					vm.minLon = bound.lng;
 				}
 			})
-
-			var diffLat = vm.maxLat - vm.minLat;
-			var diffLon = vm.maxLon - vm.minLon;
-			vm.dLat = diffLat / dims.x;
-			vm.dLon = diffLon / dims.z;
 		}
 
 		vm.lookupCoordX = function(lon) {
@@ -60,7 +54,7 @@ angular.module('viewer')
 		}
 
 		vm.lookupCoords = function(latlon) {
-			return {x:vm.lookupCoordX(latlon.lon), z:vm.lookupCoordZ(latlon.lat)};
+			return {x:vm.lookupCoordX(latlon.lon), y:10, z:vm.lookupCoordZ(latlon.lat)};
 		}
 
 		return vm;
