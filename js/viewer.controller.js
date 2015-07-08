@@ -298,6 +298,113 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
        VIEW3D.scene.add(floor);
   }
 
+  $scope.buildHMLand = function() {
+
+    var ambientLight = new THREE.AmbientLight( 0xffffff );
+    //scene.add( ambientLight );
+
+    var pointLight = new THREE.PointLight( 0xffffff, 0.0 );
+    //scene.add( pointLight );
+
+    pointLight.position.set(0, 300, -200);
+
+    var ambient = 0x000000, diffuse = 0x666666, specular = 0xffffff, shininess = 50.0, scale = 100;
+
+
+    var dispTexture = new THREE.ImageUtils.loadTexture('data/land.png');
+    dispTexture.flipY=false;
+
+    //var shader = THREE.ShaderLib[ "normalmap" ];
+    //var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+    var uniforms = THREE.UniformsUtils.merge( [
+
+      THREE.UniformsLib[ "fog" ],
+      THREE.UniformsLib[ "lights" ],
+      THREE.UniformsLib[ "shadowmap" ],
+
+      {
+
+        "enableAO"		  : { type: "i", value: 0 },
+        "enableDiffuse"	  : { type: "i", value: 0 },
+        "enableSpecular"  : { type: "i", value: 0 },
+        "enableReflection": { type: "i", value: 0 },
+        "enableDisplacement": { type: "i", value: 0 },
+
+        "tDisplacement": { type: "t", value: null }, // must go first as this is vertex texture
+        "tDiffuse"	   : { type: "t", value: null },
+        "tCube"		   : { type: "t", value: null },
+        "tNormal"	   : { type: "t", value: null },
+        "tSpecular"	   : { type: "t", value: null },
+        "tAO"		   : { type: "t", value: null },
+
+        "uNormalScale": { type: "v2", value: new THREE.Vector2( 1, 1 ) },
+
+        "uDisplacementBias": { type: "f", value: 0.0 },
+        "uDisplacementScale": { type: "f", value: 1.0 },
+
+        "uDiffuseColor": { type: "c", value: new THREE.Color( 0xffffff ) },
+        "uSpecularColor": { type: "c", value: new THREE.Color( 0x111111 ) },
+        "uAmbientColor": { type: "c", value: new THREE.Color( 0xffffff ) },
+        "uShininess": { type: "f", value: 30 },
+        "uOpacity": { type: "f", value: 1 },
+
+        "useRefract": { type: "i", value: 0 },
+        "uRefractionRatio": { type: "f", value: 0.98 },
+        "uReflectivity": { type: "f", value: 0.5 },
+
+        "uOffset" : { type: "v2", value: new THREE.Vector2( 0, 0 ) },
+        "uRepeat" : { type: "v2", value: new THREE.Vector2( 1, 1 ) },
+
+        "wrapRGB"  : { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) }
+
+      }
+
+    ] );
+
+    uniforms[ "enableDisplacement" ] = { type: 'i', value: 1 };
+    uniforms[ "enableDiffuse" ] = { type: 'i', value: 0 };
+    uniforms[ "tDiffuse" ] = dispTexture;
+    uniforms[ "tDiffuseOpacity" ] = { type: 'f', value: 1.0 };
+    uniforms[ "tDisplacement" ] = { type: 't', value: dispTexture };
+    uniforms[ "uDisplacementScale" ] = { type: 'f', value: 100 };
+
+    uniforms[ "tNormal" ] = { type: 't', value: new THREE.ImageUtils.loadTexture( 'data/flat.png' )};
+
+    uniforms[ "uDiffuseColor" ] = new THREE.Color( diffuse );
+    uniforms[ "uSpecularColor" ] = new THREE.Color( specular );
+    uniforms[ "uAmbientColor" ] = new THREE.Color( ambient );
+    uniforms[ "uShininess" ] = shininess;
+
+    uniforms[ "uPointLightPos"] =   { type: "v3", value: pointLight.position },
+        uniforms[ "uPointLightColor" ] = {type: "c", value: new THREE.Color( pointLight.color )};
+    uniforms[ "uAmbientLightColor" ] = {type: "c", value: new THREE.Color( ambientLight.color )};
+
+    //uniforms[ "uPointLightPos"] =   { type: "v3", value: VIEW3D.directionalLight.position },
+    //    uniforms[ "uPointLightColor" ] = {type: "c", value: new THREE.Color( VIEW3D.directionalLight.color )};
+    //uniforms[ "uAmbientLightColor" ] = {type: "c", value: new THREE.Color( ambientLight.color )};
+
+    uniforms[ "uDisplacementPostScale" ] = {type: 'f', value: 13 };
+
+    uniforms[ "bumpScale" ] = { type: "f", value: 10 };
+
+
+    var material = new THREE.ShaderMaterial( {
+      uniforms: uniforms,
+      vertexShader: document.getElementById( 'vertex_shader' ).textContent,
+      fragmentShader: document.getElementById( 'fragment_shader' ).textContent,
+      side: THREE.DoubleSide
+    } );
+
+
+    // GEOMETRY
+    var geometry = new THREE.PlaneGeometry(1261, 1506, 512, 512);
+    geometry.computeTangents();
+
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.rotation.x = Math.PI / 2;
+    VIEW3D.scene.add(mesh);
+  };
+
 
   $scope.buildWx = function( data, width, height, add, mult ){
     var texture = new THREE.Texture( $scope.generateCloudTexture(data, width, height) );
@@ -353,7 +460,8 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
       console.log('LOADING FROM LOCAL STORAGE', storageName);
       $scope.demdata = JSON.parse(localStorage[storageName]);
       //$scope.buildLand( $scope.demdata );
-      $scope.buildFlatLand();
+      //$scope.buildFlatLand();
+      $scope.buildHMLand();
     }else{
       //$http.get($scope.demProviderUrl, {params:requestParams, responseType: "arraybuffer"}  ).
       $http.get('data/dem.bin', {responseType: "arraybuffer"}).
@@ -361,7 +469,8 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
         $scope.demdata = Array.prototype.slice.call(new Int16Array(data));
         localStorage[storageName] = JSON.stringify($scope.demdata);
         //$scope.buildLand( $scope.demdata );
-        $scope.buildFlatLand();
+        //$scope.buildFlatLand();
+        $scope.buildHMLand();
       }).
       error(function(data, status, headers, config) {
         console.log(status, data);
