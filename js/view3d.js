@@ -68,7 +68,7 @@ var VIEW3D = {
   aMeshMirror.castShadow = false;
   aMeshMirror.receiveShadow = true;
 
-  this.scene.add(aMeshMirror);
+  //this.scene.add(aMeshMirror);
 
   this.container = new THREE.Object3D();
   this.scene.add(this.container);

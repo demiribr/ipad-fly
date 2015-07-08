@@ -34,7 +34,7 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
   $scope.camera_y = 2000;
   $scope.camera_z = 2000;
 
-  $scope.grid_dims = {x:2000, z:2000};
+  $scope.grid_dims = {x:1261, z:1506};
   $scope.geo_bounds = [
                         {
                           lat: 48.7726557377,
@@ -285,6 +285,19 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
     VIEW3D.container.add(mesh);
   };
 
+  $scope.buildFlatLand = function() {
+    // note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
+       var floorTexture = new THREE.ImageUtils.loadTexture( 'data/land.png' );
+       floorTexture.flipY = false;
+       var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.BackSide} );
+       var floorGeometry = new THREE.PlaneGeometry($scope.grid_dims.x, $scope.grid_dims.z, 1, 1);
+       var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+       floor.position.z = 0;
+       floor.position.y = 0;
+       floor.rotation.x = Math.PI / 2;
+       VIEW3D.scene.add(floor);
+  }
+
 
   $scope.buildWx = function( data, width, height, add, mult ){
     var texture = new THREE.Texture( $scope.generateCloudTexture(data, width, height) );
@@ -296,7 +309,7 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
       shininess: Number($scope.shininess)
     });
 
-    var geometry = new THREE.PlaneGeometry(2000, 2000, width-1, height-1);
+    var geometry = new THREE.PlaneGeometry($scope.grid_dims.x, $scope.grid_dims.z, width-1, height-1);
     var scale_fac = 1.0 / $scope.distns;
     console.log("BUILDING WITH", add);
     for(i = 0; i < data.length; i++){
@@ -339,14 +352,16 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
     if(0){
       console.log('LOADING FROM LOCAL STORAGE', storageName);
       $scope.demdata = JSON.parse(localStorage[storageName]);
-      $scope.buildLand( $scope.demdata );
+      //$scope.buildLand( $scope.demdata );
+      $scope.buildFlatLand();
     }else{
       //$http.get($scope.demProviderUrl, {params:requestParams, responseType: "arraybuffer"}  ).
       $http.get('data/dem.bin', {responseType: "arraybuffer"}).
       success(function(data, status, headers, config) {
         $scope.demdata = Array.prototype.slice.call(new Int16Array(data));
         localStorage[storageName] = JSON.stringify($scope.demdata);
-        $scope.buildLand( $scope.demdata );
+        //$scope.buildLand( $scope.demdata );
+        $scope.buildFlatLand();
       }).
       error(function(data, status, headers, config) {
         console.log(status, data);
