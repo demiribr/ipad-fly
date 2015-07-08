@@ -363,17 +363,17 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
 
     uniforms[ "enableDisplacement" ] = { type: 'i', value: 1 };
     uniforms[ "enableDiffuse" ] = { type: 'i', value: 0 };
-    uniforms[ "tDiffuse" ] = dispTexture;
+    uniforms[ "tDiffuse"].value = dispTexture;
     uniforms[ "tDiffuseOpacity" ] = { type: 'f', value: 1.0 };
     uniforms[ "tDisplacement" ] = { type: 't', value: dispTexture };
     uniforms[ "uDisplacementScale" ] = { type: 'f', value: 100 };
 
     uniforms[ "tNormal" ] = { type: 't', value: new THREE.ImageUtils.loadTexture( 'data/flat.png' )};
 
-    uniforms[ "uDiffuseColor" ] = new THREE.Color( diffuse );
-    uniforms[ "uSpecularColor" ] = new THREE.Color( specular );
-    uniforms[ "uAmbientColor" ] = new THREE.Color( ambient );
-    uniforms[ "uShininess" ] = shininess;
+    uniforms[ "uDiffuseColor"].value = new THREE.Color( diffuse );
+    uniforms[ "uSpecularColor"].value = new THREE.Color( specular );
+    uniforms[ "uAmbientColor"].value = new THREE.Color( ambient );
+    uniforms[ "uShininess"].value = shininess;
 
     uniforms[ "uPointLightPos"] =   { type: "v3", value: pointLight.position },
         uniforms[ "uPointLightColor" ] = {type: "c", value: new THREE.Color( pointLight.color )};
@@ -397,7 +397,7 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
 
 
     // GEOMETRY
-    var geometry = new THREE.PlaneGeometry(1261, 1506, 512, 512);
+    var geometry = new THREE.PlaneGeometry(1261, 1506, 256, 256);
     geometry.computeTangents();
 
     var mesh = new THREE.Mesh(geometry, material);
