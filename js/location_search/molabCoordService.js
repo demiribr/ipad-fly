@@ -53,6 +53,7 @@ angular.module('viewer')
         vm.lookupCoords = function (latlon) {
             return {
                 x: vm.lookupCoordX(latlon.lon),
+                y: 0,
                 z: vm.lookupCoordZ(latlon.lat)
             };
         };
