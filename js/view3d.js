@@ -19,7 +19,7 @@ var VIEW3D = {
   fps: 30,  // 30 is current Firefox max, as far as I can tell.
   // Chrome will go up to 60 which gets GPU hot.
 
-  init_scene : function init_scene(){
+  init_scene : function init_scene() {
   this.then = Date.now();
   this.now = null;
   this.delta = null;

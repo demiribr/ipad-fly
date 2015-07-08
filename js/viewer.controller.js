@@ -309,7 +309,7 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
       shininess: Number($scope.shininess)
     });
 
-    var geometry = new THREE.PlaneGeometry($scope.grid_dims.x, $scope.grid_dims.z;, width-1, height-1);
+    var geometry = new THREE.PlaneGeometry($scope.grid_dims.x, $scope.grid_dims.z, width-1, height-1);
     var scale_fac = 1.0 / $scope.distns;
     console.log("BUILDING WITH", add);
     for(i = 0; i < data.length; i++){
