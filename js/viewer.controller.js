@@ -13,6 +13,8 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
   $scope.cld_med = "data/cld_med.bin";
   $scope.cld_hig = "data/cld_hig.bin";
 
+  $scope.demProviderUrl = "http://python-wetoffice.rhcloud.com/dembin";
+  $scope.demProviderPng = "http://python-wetoffice.rhcloud.com/demcanv";
 
   $scope.bboxes = {"UK":"-12,50,3.5,59", "Exeter":"-4.93266,49.31965,-2.12066,52.13165"};
   $scope.bboxChoice = $scope.bboxes["UK"]; // watched
@@ -46,8 +48,8 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
       VIEW3D.container.remove( $scope.dem_mesh )
     };
     var params = angular.copy( $location.search());
-    params.BBOX = $scope.bboxChoice;
-    $scope.getDEM( $location.path(), params );
+    params.bbox = $scope.bboxChoice;
+    $scope.getLand( $location.path(), params );
     $scope.getCoverage( $location.path(), params );
    });
 
@@ -284,48 +286,22 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
     VIEW3D.container.add(mesh);
   };
 
-  $scope.getDEM = function( path, params ){
-    var requestParams = angular.copy( $scope.defaultDEMParams );
-    if(params.WIDTH){ requestParams.width=params.WIDTH; }
-    if(params.HEIGHT){ requestParams.height=params.HEIGHT; }
-    if(params.BBOX){ requestParams.bbox=params.BBOX; }
-
-    $scope.dem_width = requestParams.width;
-    $scope.dem_height = requestParams.height;
-
-    var bbox = requestParams['bbox'].split(',');
-    var bb = {'w':Number(bbox[0]),'s':Number(bbox[1]),'e':Number(bbox[2]),'n':Number(bbox[3])};
-    var storageName = requestParams['bbox'] + '_' + requestParams['width'] + '_' + requestParams['height']
-
-    // Find mid point of each edge of the bounding box.
-    var nmid = new LatLon(bb.n, (bb.w + bb.e)*0.5);
-    var smid = new LatLon(bb.s, (bb.w + bb.e)*0.5);
-    var wmid = new LatLon((bb.n + bb.s)*0.5, bb.w);
-    var emid = new LatLon((bb.n + bb.s)*0.5, bb.e);
-    $scope.distns = nmid.distanceTo(smid);
-    $scope.distew = wmid.distanceTo(emid);
-
-    // DEM data unlikely to change so save to local storage.
-    // Also source is external (NASA) provider, so be responsible.
-    // To clear type 'localStorage.clear()' in console.
-    //if(localStorage[storageName]){
-    if(0){
-      console.log('LOADING FROM LOCAL STORAGE', storageName);
-      $scope.demdata = JSON.parse(localStorage[storageName]);
-      $scope.buildLand( $scope.demdata );
-    }else{
-      //$http.get($scope.demProviderUrl, {params:requestParams, responseType: "arraybuffer"}  ).
-      $http.get('data/dem.bin', {responseType: "arraybuffer"}).
-      success(function(data, status, headers, config) {
-        $scope.demdata = Array.prototype.slice.call(new Int16Array(data));
-        localStorage[storageName] = JSON.stringify($scope.demdata);
-        $scope.buildLand( $scope.demdata );
-      }).
-      error(function(data, status, headers, config) {
-        console.log(status, data);
-      });
-    }
-  };
+  $scope.getLand = function( path, params){
+                          var img = new Image()
+                          var demPromise = $http.get($scope.demProviderUrl, {params:LAND3D.demParams(params), responseType: "arraybuffer"}  )
+                          img.onload = function(){
+                            demPromise.success(function(data, status, headers, config) {
+                              demdata = Array.prototype.slice.call(new Int16Array(data))
+                              var mesh = LAND3D.buildLand( img, demdata, params )
+                              VIEW3D.container.add( mesh )
+                            })
+                          }
+                          img.onerror = function(){
+                            console.warn('No png texture loaded for land surface', img.src)
+                          }
+                          img.crossOrigin="anonymous"
+                          img.src = $scope.demProviderPng + LAND3D.pngParamsStr(params)
+            }
 
   $scope.getCoverage = function( path, params ){
     var list = [
