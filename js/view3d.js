@@ -33,6 +33,9 @@ var VIEW3D = {
   this.renderer.setSize(window.innerWidth, window.innerHeight);
   this.renderer.setClearColor( 0x6666ff, 1);
 
+  this.effect = new THREE.StereoEffect( this.renderer );
+  this.effect.setSize( window.innerWidth, window.innerHeight );
+
   this.controls = new DeviceOrientationController( this.camera, this.renderer.domElement );
   this.controls.connect();
   this.controls.addEventListener( 'change', function(){VIEW3D.fps=30;});
@@ -76,7 +79,8 @@ var VIEW3D = {
 
 
   display: function display() {
-    this.renderer.render(this.scene, this.camera);
+    this.effect.render( this.scene, this.camera );
+    // this.renderer.render(this.scene, this.camera);
     if(stats){
       stats.update();
     }
