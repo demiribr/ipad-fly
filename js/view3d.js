@@ -11,9 +11,10 @@ var VIEW3D = {
 
   scene : null,
   camera : null,
+  effect: null,
   controls : null,
   renderer : null,
-  effect: null,
+  
   container : null,
   //water : null,
   directionalLight : null,
@@ -34,9 +35,6 @@ var VIEW3D = {
   this.renderer.setSize(window.innerWidth, window.innerHeight);
   this.renderer.setClearColor( 0x6666ff, 1);
 
-  this.effect = new THREE.StereoEffect( this.renderer );
-  // this.effect.setSize( window.innerWidth, window.innerHeight );
-
   this.controls = new DeviceOrientationController( this.camera, this.renderer.domElement );
   this.controls.connect();
   this.controls.addEventListener( 'change', function(){VIEW3D.fps=30;});
@@ -45,6 +43,9 @@ var VIEW3D = {
   //directionalLight.position.set(-600, 300, -600);
   this.directionalLight.position.set(200, 800, 1500);
   this.scene.add(this.directionalLight);
+
+  this.effect = new THREE.StereoEffect( this.renderer );
+  this.effect.setSize( window.innerWidth, window.innerHeight );
 
   // see http://www.html5rocks.com/en/tutorials/webgl/shaders/
 
@@ -80,7 +81,8 @@ var VIEW3D = {
 
 
   display: function display() {
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
+    this.effect.render(this.scene, this.camera);
     if(stats){
       stats.update();
     }
