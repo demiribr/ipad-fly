@@ -13,6 +13,7 @@ var VIEW3D = {
   camera : null,
   controls : null,
   renderer : null,
+  effect: null,
   container : null,
   //water : null,
   directionalLight : null,
@@ -34,7 +35,7 @@ var VIEW3D = {
   this.renderer.setClearColor( 0x6666ff, 1);
 
   this.effect = new THREE.StereoEffect( this.renderer );
-  this.effect.setSize( window.innerWidth, window.innerHeight );
+  // this.effect.setSize( window.innerWidth, window.innerHeight );
 
   this.controls = new DeviceOrientationController( this.camera, this.renderer.domElement );
   this.controls.connect();
@@ -79,8 +80,7 @@ var VIEW3D = {
 
 
   display: function display() {
-    this.effect.render( this.scene, this.camera );
-    // this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
     if(stats){
       stats.update();
     }
@@ -99,7 +99,7 @@ var VIEW3D = {
     }
     VIEW3D.camera.position.y = Math.max(VIEW3D.camera.position.y, 2)
     this.camera_position = VIEW3D.camera.position;
-    this.controls.update();
+    this.controls.update(this.delta);
     this.display();
     if (connectedToRoom && isMobile) {
       socket.emit('send camera', {
