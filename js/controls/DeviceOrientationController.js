@@ -414,7 +414,13 @@ var DeviceOrientationController = function ( object, domElement ) {
 			gamma  = THREE.Math.degToRad( this.deviceOrientation.gamma || 0 ); // Y''
 			orient = THREE.Math.degToRad( this.screenOrientation       || 0 ); // O
 
-			console.log(this.deviceOrientation);
+			document.getElementById("socket-id").innerHTML = this.deviceOrientation.beta;
+
+			if (this.deviceOrientation.beta > 15){
+				VIEW3D.controls.forwardMovement = true;
+			} else if (this.deviceOrientation.beta < -15) {
+				VIEW3D.controls.forwardMovement = false;
+			}
 
 			// only process non-zero 3-axis data
 			if ( alpha !== 0 && beta !== 0 && gamma !== 0) {
