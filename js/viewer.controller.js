@@ -330,7 +330,7 @@ angular.module('viewer', ["informatics-badge-directive"]).controller("MainContro
   $scope.getCoverage = function( path, params ){
     var list = [
       {u:$scope.cld_low,a:40},
-      {u:$scope.cld_med,a:50},
+      //{u:$scope.cld_med,a:50},
       {u:$scope.cld_hig, a:150}
     ];
 

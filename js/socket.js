@@ -5,15 +5,15 @@ var connectedToRoom = false;
 var isMobile = false;
 
 // Check if mobile device and display connection button
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-  document.getElementById("socket-connect").style.display = 'block';
-  document.getElementById("forward").style.display = 'block';
-  document.getElementById("backward").style.display = 'block';
-  isMobile = true;
-} else {
-  // Create new room and log roomId
-  socket.emit('subscribe', '');
-}
+// if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+//   document.getElementById("socket-connect").style.display = 'block';
+//   document.getElementById("forward").style.display = 'block';
+//   document.getElementById("backward").style.display = 'block';
+//   isMobile = true;
+// } else {
+//   // Create new room and log roomId
+//   socket.emit('subscribe', '');
+// }
 
 socket.on('subscription', function (data) {
     roomId = data.roomId;

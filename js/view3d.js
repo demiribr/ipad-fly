@@ -14,7 +14,7 @@ var VIEW3D = {
   effect: null,
   controls : null,
   renderer : null,
-  
+
   container : null,
   //water : null,
   directionalLight : null,
@@ -118,6 +118,7 @@ var VIEW3D = {
     this.camera.aspect =  inWidth / inHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(inWidth, inHeight);
+    this.effect.setSize(inWidth, inHeight);
     this.canvas.html(this.renderer.domElement);
     this.display();
   }
