@@ -13,7 +13,7 @@ THREE.StereoEffect = function ( renderer ) {
 
 	var scope = this;
 
-	this.eyeSeparation = 2;
+	this.eyeSeparation = 1;
 	this.focalLength = 15; 	// Distance to the non-parallax or projection plane
 
 	Object.defineProperties( this, {
