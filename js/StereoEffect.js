@@ -13,7 +13,7 @@ THREE.StereoEffect = function ( renderer ) {
 
 	var scope = this;
 
-	this.eyeSeparation = 3;
+	this.eyeSeparation = 5;
 	this.focalLength = 15; 	// Distance to the non-parallax or projection plane
 
 	Object.defineProperties( this, {
@@ -71,7 +71,7 @@ THREE.StereoEffect = function ( renderer ) {
 		scene.updateMatrixWorld();
 
 		if ( camera.parent === undefined ) camera.updateMatrixWorld();
-	
+
 		camera.matrixWorld.decompose( _position, _quaternion, _scale );
 
 		// Effective fov of the camera
